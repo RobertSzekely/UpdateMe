@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">UpdateMe</string>
+    <string name="main_screen_description">You should see an update popup when a new version is available</string>
 </resources>
