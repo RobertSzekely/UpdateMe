@@ -8,13 +8,13 @@
     tools:context=".MainActivity">
 
     <TextView
+        style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_margin"
         android:layout_marginEnd="@dimen/activity_margin"
         android:text="@string/main_screen_description"
         android:textAlignment="center"
-        style="@style/TextAppearance.AppCompat.Subhead"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
