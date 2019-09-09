@@ -28,21 +28,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_margin"
+        android:text="@string/flexible"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/immediate_update_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/instructions"
-        android:textAllCaps="false"
-        android:text="@string/flexible"/>
+        app:layout_constraintTop_toBottomOf="@id/instructions" />
 
     <Button
         android:id="@+id/immediate_update_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/immediate"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/flexible_update_button"
-        app:layout_constraintTop_toTopOf="@id/flexible_update_button"
-        android:textAllCaps="false"
-        android:text="@string/immediate"/>
+        app:layout_constraintTop_toTopOf="@id/flexible_update_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
