@@ -1,4 +1,4 @@
-package com.example.updateme
+package com.robertszekely.updateme
 
 import android.app.Activity
 import android.content.Intent

@@ -1,4 +1,4 @@
-package com.example.updateme
+package com.robertszekely.updateme
 
 import android.content.Context
 import android.widget.Toast
