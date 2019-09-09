@@ -26,6 +26,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            lastSelectedUpdateType = savedInstanceState.getInt(LAST_SELECTED_UPDATE_TYPE)
+        }
         setContentView(R.layout.activity_main)
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
@@ -96,6 +100,11 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(LAST_SELECTED_UPDATE_TYPE, lastSelectedUpdateType)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun requestUpdate(appUpdateInfo: AppUpdateInfo?, @AppUpdateType updateType: Int) {
         appUpdateManager.startUpdateFlowForResult(
             appUpdateInfo,
@@ -144,5 +153,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE_UPDATE = 5324
+        private const val LAST_SELECTED_UPDATE_TYPE = "lastSelectedUpdateType"
     }
 }
