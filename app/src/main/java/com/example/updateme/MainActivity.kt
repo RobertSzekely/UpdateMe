@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
@@ -20,25 +21,35 @@ import com.google.android.play.core.install.model.UpdateAvailability
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appUpdateManager: AppUpdateManager
-    private lateinit var installStateUpdatedListener: InstallStateUpdatedListener
+    private lateinit var flexibleInstallStateUpdatedListener: InstallStateUpdatedListener
+    private var lastSelectedUpdateType = AppUpdateType.FLEXIBLE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
-        installStateUpdatedListener = InstallStateUpdatedListener { state ->
-            handleInstallState(state)
+        flexibleInstallStateUpdatedListener = InstallStateUpdatedListener { state ->
+            handleFlexibleInstallState(state)
         }
 
-        appUpdateManager.registerListener(installStateUpdatedListener)
+        findViewById<Button>(R.id.flexible_update_button).setOnClickListener {
+            appUpdateManager.registerListener(flexibleInstallStateUpdatedListener)
+            checkForUpdate(AppUpdateType.FLEXIBLE)
+        }
 
-        checkForUpdate()
+        findViewById<Button>(R.id.immediate_update_button).setOnClickListener {
+            //listener is not required for immediate update, the restart of the app is handled automatically
+            appUpdateManager.unregisterListener(flexibleInstallStateUpdatedListener)
+            checkForUpdate(AppUpdateType.IMMEDIATE)
+            lastSelectedUpdateType = AppUpdateType.IMMEDIATE
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_FLEXIBLE_UPDATE) {
+        if (requestCode == REQUEST_CODE_UPDATE) {
             // onActivityResult triggered after calling startUpdateFlowForResult()
             when (resultCode) {
                 Activity.RESULT_OK -> {
@@ -48,12 +59,12 @@ class MainActivity : AppCompatActivity() {
                 Activity.RESULT_CANCELED -> {
                     // handle user's rejection
                     showToastAndLogMessage("User cancelled the update")
-                    checkForUpdate()
+                    checkForUpdate(lastSelectedUpdateType)
                 }
                 ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
                     // handle update failure
                     showToastAndLogMessage("Update failed")
-                    checkForUpdate()
+                    checkForUpdate(lastSelectedUpdateType)
                 }
             }
         }
@@ -61,44 +72,53 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        appUpdateManager.unregisterListener(installStateUpdatedListener)
+        appUpdateManager.unregisterListener(flexibleInstallStateUpdatedListener)
     }
 
     override fun onResume() {
         super.onResume()
-        //check if the update downloaded while the app was in the background
         appUpdateManager.appUpdateInfo
             .addOnSuccessListener { appUpdateInfo ->
+                //check if the update downloaded while the app was in the background
                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                     showToastAndLogMessage("Update was downloaded in the background")
                     appUpdateManager.completeUpdate()
                 }
+                //check if the user left the app and returned before the immediate update got the finish in the background
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.IMMEDIATE,
+                        this,
+                        REQUEST_CODE_UPDATE
+                    )
+                }
             }
     }
 
-    private fun requestUpdate(appUpdateInfo: AppUpdateInfo?) {
+    private fun requestUpdate(appUpdateInfo: AppUpdateInfo?, @AppUpdateType updateType: Int) {
         appUpdateManager.startUpdateFlowForResult(
             appUpdateInfo,
-            AppUpdateType.FLEXIBLE,
+            updateType,
             this,
-            REQUEST_CODE_FLEXIBLE_UPDATE
+            REQUEST_CODE_UPDATE
         )
     }
 
-    private fun checkForUpdate() {
+    private fun checkForUpdate(@AppUpdateType updateType: Int) {
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             //  check for the type of update flow you want
-            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+            if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(updateType)) {
                 showToastAndLogMessage("Version code available ${it.availableVersionCode()}")
                 //request the update
-                requestUpdate(it)
+                requestUpdate(it, updateType)
             } else {
                 showToastAndLogMessage("Update not available.")
             }
         }
     }
 
-    private fun handleInstallState(state: InstallState) {
+    private fun handleFlexibleInstallState(state: InstallState) {
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
             // After the update is downloaded, show a notification
             // and request user confirmation to restart the app.
@@ -123,6 +143,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val REQUEST_CODE_FLEXIBLE_UPDATE = 5324
+        private const val REQUEST_CODE_UPDATE = 5324
     }
 }
