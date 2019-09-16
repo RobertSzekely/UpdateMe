@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
@@ -48,6 +49,9 @@ class MainActivity : AppCompatActivity() {
             checkForUpdate(AppUpdateType.IMMEDIATE)
             lastSelectedUpdateType = AppUpdateType.IMMEDIATE
         }
+
+        findViewById<TextView>(R.id.version_name).text = getString(R.string.version_name, BuildConfig.VERSION_NAME)
+        findViewById<TextView>(R.id.version_code).text = getString(R.string.version_code, BuildConfig.VERSION_CODE)
 
     }
 

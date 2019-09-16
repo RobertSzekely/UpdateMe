@@ -45,4 +45,23 @@
         app:layout_constraintStart_toEndOf="@id/flexible_update_button"
         app:layout_constraintTop_toTopOf="@id/flexible_update_button" />
 
+    <TextView
+        android:id="@+id/version_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintEnd_toEndOf="@id/version_code"
+        app:layout_constraintBottom_toTopOf="@id/version_code"
+        tools:text="version 1.1"/>
+
+    <TextView
+        android:id="@+id/version_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_margin"
+        android:layout_marginBottom="@dimen/activity_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="version code 3"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

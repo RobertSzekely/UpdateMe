@@ -3,4 +3,6 @@
     <string name="main_screen_description">Pick which kind of update would you like to test</string>
     <string name="flexible">Flexible</string>
     <string name="immediate">Immediate</string>
+    <string name="version_name">version %1$s</string>
+    <string name="version_code">version code %1$d</string>
 </resources>
