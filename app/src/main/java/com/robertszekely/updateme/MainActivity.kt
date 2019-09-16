@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                 ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
                     // handle update failure
                     showToastAndLogMessage("Update failed")
-                    checkForUpdate(lastSelectedUpdateType)
                 }
             }
         }
