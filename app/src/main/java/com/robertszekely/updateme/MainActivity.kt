@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestUpdate(appUpdateInfo: AppUpdateInfo?, @AppUpdateType updateType: Int) {
+        showToastAndLogMessage("Requested update: $updateType")
         appUpdateManager.startUpdateFlowForResult(
             appUpdateInfo,
             updateType,
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity() {
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             //  check for the type of update flow you want
             if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(updateType)) {
-                showToastAndLogMessage("Version code available ${it.availableVersionCode()}")
+                showToastAndLogMessage("Version code available ${it.availableVersionCode()}, update type $updateType")
                 //request the update
                 requestUpdate(it, updateType)
             } else {
