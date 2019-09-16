@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
                 Activity.RESULT_CANCELED -> {
                     // handle user's rejection
                     showToastAndLogMessage("User cancelled the update")
-                    checkForUpdate(lastSelectedUpdateType)
                 }
                 ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
                     // handle update failure
