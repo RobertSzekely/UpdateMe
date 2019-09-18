@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                     appUpdateManager.completeUpdate()
                 }
                 //check if the user left the app and returned before the immediate update got the finish in the background
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                if (lastSelectedUpdateType == AppUpdateType.IMMEDIATE && appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
                         AppUpdateType.IMMEDIATE,
